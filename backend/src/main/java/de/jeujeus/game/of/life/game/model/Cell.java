@@ -1,4 +1,4 @@
-package de.jeujeus.game.of.life.model;
+package de.jeujeus.game.of.life.game.model;
 
 import lombok.Getter;
 import lombok.Setter;

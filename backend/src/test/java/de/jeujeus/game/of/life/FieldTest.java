@@ -1,7 +1,8 @@
 package de.jeujeus.game.of.life;
 
 import com.google.common.collect.Table;
-import de.jeujeus.game.of.life.model.Cell;
+import de.jeujeus.game.of.life.game.Field;
+import de.jeujeus.game.of.life.game.model.Cell;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

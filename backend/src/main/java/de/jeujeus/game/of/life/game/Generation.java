@@ -1,7 +1,7 @@
-package de.jeujeus.game.of.life;
+package de.jeujeus.game.of.life.game;
 
 import com.google.common.collect.Table;
-import de.jeujeus.game.of.life.model.Cell;
+import de.jeujeus.game.of.life.game.model.Cell;
 
 import java.util.ArrayList;
 import java.util.List;
