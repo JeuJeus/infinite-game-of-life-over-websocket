@@ -28,7 +28,7 @@ class GenerationTest {
         @Test
         void should_calculate_correct_next_generation_when_stationary() {
             Table<Integer, Integer, Cell> currentGeneration = Field.generateField(4, 4);
-            //square block
+            //square block with
             currentGeneration.get(1, 1)
                     .setAlive(true);
             currentGeneration.get(1, 2)
@@ -66,7 +66,7 @@ class GenerationTest {
         @Test
         void should_calculate_correct_next_generation_when_transforming() {
             Table<Integer, Integer, Cell> currentGeneration = Field.generateField(4, 4);
-            //square block
+            //square block with one missing
             currentGeneration.get(1, 1)
                     .setAlive(true);
             currentGeneration.get(1, 2)
@@ -96,6 +96,36 @@ class GenerationTest {
             assertEquals(true, nextGeneration.get(2, 1)
                     .isAlive());
             assertEquals(true, nextGeneration.get(2, 2)
+                    .isAlive());
+        }
+
+        @Test
+        void should_calculate_blinker() {
+            Table<Integer, Integer, Cell> currentGeneration = Field.generateField(1, 3);
+            //square block
+            currentGeneration.get(0, 0)
+                    .setAlive(true);
+            currentGeneration.get(0, 1)
+                    .setAlive(true);
+            currentGeneration.get(0, 2)
+                    .setAlive(true);
+
+            /*
+             * X
+             * X
+             * X
+             *
+             * XXX
+             * */
+
+            Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
+
+            assertEquals(3, nextGeneration.size());
+            assertEquals(true, nextGeneration.get(-1, 1)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(1, 1)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(1, 1)
                     .isAlive());
         }
     }
