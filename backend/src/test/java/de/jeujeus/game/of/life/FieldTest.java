@@ -1,7 +1,7 @@
 package de.jeujeus.game.of.life;
 
 import com.google.common.collect.Table;
-import org.checkerframework.checker.units.qual.C;
+import de.jeujeus.game.of.life.model.Cell;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -27,6 +27,22 @@ class FieldTest {
                 .count();
 
         assertEquals(aliveCellsInField, 0);
+    }
+
+    @Test
+    void should_generate_field_with_negative_lower_bound() {
+        int fieldWidth = 2;
+        int fieldHeight = 2;
+
+        Table<Integer, Integer, Cell> field = Field.generateField(-fieldWidth,fieldWidth, -fieldHeight,fieldHeight);
+
+        Set<Table.Cell<Integer, Integer, Cell>> cells = field.cellSet();
+        Map<Integer, Map<Integer, Cell>> cellRows = field.rowMap();
+        Map<Integer, Map<Integer, Cell>> cellColumns = field.columnMap();
+
+        assertEquals((2*fieldHeight) * (2*fieldWidth), cells.size());
+        assertEquals((2*fieldHeight), cellRows.size());
+        assertEquals((2*fieldWidth), cellColumns.size());
     }
 
     @ParameterizedTest(name = "{index} - field {0}x{1} is correct")

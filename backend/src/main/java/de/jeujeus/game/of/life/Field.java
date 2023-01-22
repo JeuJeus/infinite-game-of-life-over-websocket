@@ -3,6 +3,7 @@ package de.jeujeus.game.of.life;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Table;
+import de.jeujeus.game.of.life.model.Cell;
 
 import java.util.Map;
 
@@ -13,14 +14,22 @@ public class Field {
     private Field() {
     }
 
-    static Table<Integer, Integer, Cell> generateField(final int fieldWidth, final int fieldHeight) {
+    static Table<Integer, Integer, Cell> generateField(final int fieldStartWidth,
+                                                       final int fieldWidth,
+                                                       final int fielStartHeight,
+                                                       final int fieldHeight) {
+
         Table<Integer, Integer, Cell> field = HashBasedTable.create();
 
-        range(0, fieldWidth)
-                .forEachOrdered(c -> range(0, fieldHeight)
+        range(fieldStartWidth, fieldWidth)
+                .forEachOrdered(c -> range(fielStartHeight, fieldHeight)
                         .forEachOrdered(r -> field.put(c, r, new Cell(c, r))));
 
         return field;
+    }
+
+    static Table<Integer, Integer, Cell> generateField(final int fieldWidth, final int fieldHeight) {
+        return generateField(0, fieldWidth, 0, fieldHeight);
     }
 
     static Table<Integer, Integer, Cell> trimDeadOuterCellsFromField(final Table<Integer, Integer, Cell> untrimmedField) {
