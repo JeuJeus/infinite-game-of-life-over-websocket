@@ -14,6 +14,16 @@ public class Field {
     private Field() {
     }
 
+    static Table<Integer, Integer, Cell> generateNextField(final int currentFieldStartWidth,
+                                                           final int currentFieldWidth,
+                                                           final int currentFielStartHeight,
+                                                           final int currentFieldHeight) {
+        return generateField(currentFieldStartWidth - 1,
+                currentFieldWidth + 1,
+                currentFielStartHeight - 1,
+                currentFieldHeight + 1);
+    }
+
     static Table<Integer, Integer, Cell> generateField(final int fieldStartWidth,
                                                        final int fieldWidth,
                                                        final int fielStartHeight,

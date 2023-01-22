@@ -22,13 +22,91 @@ class GenerationTest {
         cellInMiddle = new Cell(true, 1, 1);
     }
 
+    @Nested
+    @DisplayName("Generation Creation Tests")
+    class GenerationCreation {
+        @Test
+        void should_calculate_correct_next_generation_when_stationary() {
+            Table<Integer, Integer, Cell> currentGeneration = Field.generateField(4, 4);
+            //square block
+            currentGeneration.get(1, 1)
+                    .setAlive(true);
+            currentGeneration.get(1, 2)
+                    .setAlive(true);
+            currentGeneration.get(2, 1)
+                    .setAlive(true);
+            currentGeneration.get(2, 2)
+                    .setAlive(true);
+
+            /*
+             * OOOO
+             * OXXO
+             * OXXO
+             * OOOO
+             *
+             * OOOO
+             * OXXO
+             * OXXO
+             * OOOO
+             * */
+
+            Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
+
+            assertEquals(4, nextGeneration.size());
+            assertEquals(true, nextGeneration.get(1, 1)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(1, 2)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(2, 1)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(2, 2)
+                    .isAlive());
+        }
+
+        @Test
+        void should_calculate_correct_next_generation_when_transforming() {
+            Table<Integer, Integer, Cell> currentGeneration = Field.generateField(4, 4);
+            //square block
+            currentGeneration.get(1, 1)
+                    .setAlive(true);
+            currentGeneration.get(1, 2)
+                    .setAlive(true);
+            currentGeneration.get(2, 1)
+                    .setAlive(true);
+
+            /*
+             * OOOO
+             * OXOO
+             * OXXO
+             * OOOO
+             *
+             * OOOO
+             * OXXO
+             * OXXO
+             * OOOO
+             * */
+
+            Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
+
+            assertEquals(4, nextGeneration.size());
+            assertEquals(true, nextGeneration.get(1, 1)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(1, 2)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(2, 1)
+                    .isAlive());
+            assertEquals(true, nextGeneration.get(2, 2)
+                    .isAlive());
+        }
+    }
+
     @Test
     void should_return_list_of_8_neighbours_when_all_present() {
         List<Cell> neighbours = Generation.getNeighbours(currentGeneration, cellInMiddle);
         assertEquals(8, neighbours.size());
 
         List<Cell> startCellInNeighbours = neighbours.parallelStream()
-                .filter(c -> c.getYCoordinate() == cellInMiddle.getXCoordinate() && c.getYCoordinate() == cellInMiddle.getYCoordinate())
+                .filter(c -> (c.getXCoordinate() == cellInMiddle.getXCoordinate() && c.getYCoordinate() == cellInMiddle.getYCoordinate()))
                 .toList();
 
         assertEquals(0, startCellInNeighbours.size());
@@ -48,7 +126,7 @@ class GenerationTest {
                 .forEach(c -> c.setAlive(true));
 
         int countOfAliveNeighbours = Generation.getCountOfAliveNeighbours(currentGeneration, cellInMiddle);
-        assertEquals(4, countOfAliveNeighbours);
+        assertEquals(8, countOfAliveNeighbours);
     }
 
     @Nested

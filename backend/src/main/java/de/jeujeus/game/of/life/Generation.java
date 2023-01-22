@@ -6,10 +6,14 @@ import de.jeujeus.game.of.life.model.Cell;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.stream.IntStream.rangeClosed;
 
 public class Generation {
+
+    private Generation() {
+    }
 
     static Table<Integer, Integer, Cell> calculateNextGeneration(Table<Integer, Integer, Cell> currentGeneration) {
         Integer xLowestIndex = Field.getFirstIndexIn(currentGeneration.columnMap());
@@ -17,15 +21,18 @@ public class Generation {
         Integer yLowestIndex = Field.getFirstIndexIn(currentGeneration.rowMap());
         Integer yHighestIndex = indexCorrection(Field.getLastIndexIn(currentGeneration.rowMap()));
 
-        Table<Integer, Integer, Cell> nextField = Field.generateField(xLowestIndex, xHighestIndex, yLowestIndex, yHighestIndex);
+        Table<Integer, Integer, Cell> nextField = Field.generateNextField(xLowestIndex, xHighestIndex, yLowestIndex, yHighestIndex);
 
-//        currentGeneration.cellSet()
-//                .stream()
-//                .map(Table.Cell::getValue)
-//                .forEach(c -> Objects.requireNonNull(nextField.get(c.getXCoordinate(), c.getYCoordinate()))
-//                        .setAlive(isAliveNextGeneration(currentGeneration, c)));
+        nextField.cellSet()
+                .stream()
+                .map(Table.Cell::getValue)
+                .forEach(c -> {
+                    Cell cellFromOldGeneration = Optional.ofNullable(currentGeneration.get(c.getXCoordinate(), c.getYCoordinate()))
+                            .orElse(new Cell(c.getXCoordinate(), c.getYCoordinate()));
+                    c.setAlive(isAliveNextGeneration(currentGeneration, cellFromOldGeneration));
+                });
 
-        return nextField;
+        return Field.trimDeadOuterCellsFromField(nextField);
     }
 
     private static int indexCorrection(final int index) {
@@ -59,8 +66,12 @@ public class Generation {
 
         return neighbours.parallelStream()
                 .filter(Objects::nonNull)
-                .filter(n -> (n.getXCoordinate() != xCoordinate && n.getYCoordinate() != yCoordinate))
+                .filter(n -> isNotOriginCell(xCoordinate, yCoordinate, n))
                 .toList();
+    }
+
+    private static boolean isNotOriginCell(final int xCoordinate, final int yCoordinate, final Cell n) {
+        return !(n.getXCoordinate() == xCoordinate && n.getYCoordinate() == yCoordinate);
     }
 
 }
