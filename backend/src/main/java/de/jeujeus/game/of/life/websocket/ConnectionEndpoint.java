@@ -1,11 +1,15 @@
 package de.jeujeus.game.of.life.websocket;
 
+import com.google.common.collect.Table;
+import de.jeujeus.game.of.life.game.Generation;
+import de.jeujeus.game.of.life.game.model.Cell;
 import de.jeujeus.game.of.life.websocket.message.dto.GameState;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -36,7 +40,17 @@ public class ConnectionEndpoint {
 
     @OnMessage
     public void onMessage(Session session, GameState state) {
-        sendMessage(state);
+        //TODO remove responsibility from here
+        Table<Integer, Integer, Cell> generation = Generation.createGenerationFromList(state.getField());
+        Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(generation);
+
+        List<Cell> nextGenerationCellList = nextGeneration.cellSet()
+                .stream()
+                .map(Table.Cell::getValue)
+                .toList();
+        GameState gameState = new GameState(nextGenerationCellList);
+
+        sendMessage(gameState);
     }
 
     @OnClose

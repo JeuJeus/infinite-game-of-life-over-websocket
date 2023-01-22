@@ -1,0 +1,53 @@
+<html>
+<head>
+    <script>
+        const webSocket = new WebSocket('ws://localhost:8080/gameOfLife');
+        webSocket.binaryType = 'arraybuffer';
+
+        let timeP, messageDiv;
+        addEventListener('DOMContentLoaded', () => {
+            messageDiv = document.querySelector('#game');
+        });
+
+        let s = JSON.stringify({
+            'field': [
+                {
+                    'isAlive': true,
+                    'xCoordinate': 0,
+                    'yCoordinate': 0
+                },{
+                    'isAlive': true,
+                    'xCoordinate': 1,
+                    'yCoordinate': 0
+                },{
+                    'isAlive': true,
+                    'xCoordinate': 1,
+                    'yCoordinate': 1
+                },{
+                    'isAlive': true,
+                    'xCoordinate': 2,
+                    'yCoordinate': 0
+                }
+            ]
+        });
+        webSocket.onopen = () => {
+            webSocket.send(s);
+        }
+
+        webSocket.onmessage = (event) => {
+            console.log(event);
+            const data = JSON.parse(event.data);
+
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+
+            data.field.forEach(c => ctx.fillRect(c.xCoordinate * 10, c.yCoordinate * 10, 10, 10))
+            setTimeout(() => webSocket.send(event.data),1000);
+        };
+    </script>
+</head>
+<body>
+<div id="game"></div>
+<canvas id="canvas"></canvas>
+</body>
+</html>

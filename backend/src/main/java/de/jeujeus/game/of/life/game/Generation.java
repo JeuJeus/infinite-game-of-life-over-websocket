@@ -3,10 +3,7 @@ package de.jeujeus.game.of.life.game;
 import com.google.common.collect.Table;
 import de.jeujeus.game.of.life.game.model.Cell;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.IntStream.rangeClosed;
 
@@ -15,7 +12,34 @@ public class Generation {
     private Generation() {
     }
 
-    static Table<Integer, Integer, Cell> calculateNextGeneration(Table<Integer, Integer, Cell> currentGeneration) {
+    public static Table<Integer, Integer, Cell> createGenerationFromList(List<Cell> generation) {
+        //TODO refactor this beast
+        int xLowestIndex = generation.stream()
+                .min(Comparator.comparing(Cell::getXCoordinate))
+                .orElseThrow(NoSuchElementException::new)
+                .getXCoordinate();
+        int xHighestIndex = indexCorrection(generation.stream()
+                .max(Comparator.comparing(Cell::getXCoordinate))
+                .orElseThrow(NoSuchElementException::new)
+                .getXCoordinate());
+        int yLowestIndex = generation.stream()
+                .min(Comparator.comparing(Cell::getYCoordinate))
+                .orElseThrow(NoSuchElementException::new)
+                .getYCoordinate();
+        int yHighestIndex = indexCorrection(generation.stream()
+                .max(Comparator.comparing(Cell::getYCoordinate))
+                .orElseThrow(NoSuchElementException::new)
+                .getYCoordinate());
+
+        Table<Integer, Integer, Cell> builtField = Field.generateField(xLowestIndex, xHighestIndex, yLowestIndex, yHighestIndex);
+        generation.parallelStream()
+                .forEach(c -> Objects.requireNonNull(builtField.get(c.getXCoordinate(), c.getYCoordinate()))
+                        .setAlive(c.isAlive()));
+
+        return builtField;
+    }
+
+    public static Table<Integer, Integer, Cell> calculateNextGeneration(Table<Integer, Integer, Cell> currentGeneration) {
         Integer xLowestIndex = Field.getFirstIndexIn(currentGeneration.columnMap());
         Integer xHighestIndex = indexCorrection(Field.getLastIndexIn(currentGeneration.columnMap()));
         Integer yLowestIndex = Field.getFirstIndexIn(currentGeneration.rowMap());
