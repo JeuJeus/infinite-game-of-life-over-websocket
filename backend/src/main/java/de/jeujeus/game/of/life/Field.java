@@ -1,21 +1,26 @@
 package de.jeujeus.game.of.life;
 
-import java.util.ArrayList;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
 import java.util.List;
 
 public class Field {
 
-    static List<List<Cell>> generateField(final int fieldWidth, final int fieldHeight) {
-        ArrayList<List<Cell>> field = new ArrayList<>();
+    private Field() {
+    }
+
+    static Table<Integer, Integer, Cell> generateField(final int fieldWidth, final int fieldHeight) {
+        Table<Integer,Integer,Cell> field = HashBasedTable.create();
         for (int i = 0; i < fieldWidth; i++) {
-            ArrayList<Cell> column = new ArrayList<>();
             for (int j = 0; j < fieldHeight; j++) {
-                Cell cell = new Cell(i, j);
-                column.add(cell);
+                field.put(i, j, new Cell(i, j));
             }
-            field.add(column);
         }
         return field;
     }
 
+    static List<List<Cell>> trimDeadCellsFromField(final List<List<Cell>> untrimmedField) {
+        return untrimmedField;
+    }
 }
