@@ -125,7 +125,7 @@ class GenerationTest {
             assertEquals(3, nextGeneration.size());
             assertTrue(nextGeneration.get(-1, 1)
                     .isAlive());
-            assertTrue(nextGeneration.get(1, 1)
+            assertTrue(nextGeneration.get(0, 1)
                     .isAlive());
             assertTrue(nextGeneration.get(1, 1)
                     .isAlive());
