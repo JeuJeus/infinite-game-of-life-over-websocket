@@ -1,6 +1,5 @@
 package de.jeujeus.game.of.life.websocket;
 
-import com.google.common.collect.Table;
 import de.jeujeus.game.of.life.game.Generation;
 import de.jeujeus.game.of.life.game.model.Cell;
 import de.jeujeus.game.of.life.websocket.message.dto.GameState;

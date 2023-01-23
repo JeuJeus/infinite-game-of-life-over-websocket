@@ -1,7 +1,6 @@
 package de.jeujeus.game.of.life.game;
 
 import com.google.common.collect.Table;
-import de.jeujeus.game.of.life.game.Field;
 import de.jeujeus.game.of.life.game.model.Cell;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,7 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FieldTest {
 
@@ -27,7 +26,7 @@ class FieldTest {
                 .filter(Cell::isAlive)
                 .count();
 
-        assertEquals(aliveCellsInField, 0);
+        assertEquals(0, aliveCellsInField);
     }
 
     @Test
@@ -67,7 +66,7 @@ class FieldTest {
         Cell deadCell = new Cell(0, 0);
         Map<Integer, Cell> deadCells = Map.of(1, deadCell, 2, deadCell, 3, deadCell, 4, deadCell, 5, deadCell);
 
-        assertEquals(true, Field.containsOnlyDeadCells(deadCells));
+        assertTrue(Field.containsOnlyDeadCells(deadCells));
     }
 
     @Test
@@ -76,7 +75,7 @@ class FieldTest {
         Cell aliveCell = new Cell(true, 0, 0);
         Map<Integer, Cell> deadCells = Map.of(1, deadCell, 2, deadCell, 3, deadCell, 4, aliveCell, 5, deadCell);
 
-        assertEquals(false, Field.containsOnlyDeadCells(deadCells));
+        assertFalse(Field.containsOnlyDeadCells(deadCells));
     }
 
     @Test
@@ -127,9 +126,9 @@ class FieldTest {
                 .findFirst()
                 .orElseThrow()
                 .getValue();
-        assertEquals(remainingCell.getXCoordinate(),2);
-        assertEquals(remainingCell.getYCoordinate(),2);
-        assertEquals(remainingCell.isAlive(),true);
+        assertEquals(2, remainingCell.getXCoordinate());
+        assertEquals(2, remainingCell.getYCoordinate());
+        assertTrue(remainingCell.isAlive());
     }
 
     @Test

@@ -1,10 +1,11 @@
 <html>
 <head>
     <script>
+        <!-- TODO before even starting to work on the -> refactor -->
         const webSocket = new WebSocket('ws://localhost:8080/gameOfLife');
         webSocket.binaryType = 'arraybuffer';
 
-        let timeP, messageDiv;
+        let messageDiv;
         addEventListener('DOMContentLoaded', () => {
             messageDiv = document.querySelector('#game');
         });
@@ -15,15 +16,15 @@
                     'isAlive': true,
                     'xCoordinate': 0,
                     'yCoordinate': 0
-                },{
+                }, {
                     'isAlive': true,
                     'xCoordinate': 1,
                     'yCoordinate': 0
-                },{
+                }, {
                     'isAlive': true,
                     'xCoordinate': 1,
                     'yCoordinate': 1
-                },{
+                }, {
                     'isAlive': true,
                     'xCoordinate': 2,
                     'yCoordinate': 0
@@ -42,7 +43,7 @@
             const ctx = canvas.getContext("2d");
 
             data.field.forEach(c => ctx.fillRect(c.xCoordinate * 10, c.yCoordinate * 10, 10, 10))
-            setTimeout(() => webSocket.send(event.data),1000);
+            setTimeout(() => webSocket.send(event.data), 1000);
         };
     </script>
 </head>
