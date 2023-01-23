@@ -9,24 +9,23 @@ addEventListener('DOMContentLoaded', () => {
     ctx = canvas.getContext("2d");
 });
 
-let s = JSON.stringify({
-    'field': [
-        {
-            'isAlive': true,
-            'xCoordinate': 0,
-            'yCoordinate': 0
-        }, {
-            'isAlive': true,
-            'xCoordinate': 0,
-            'yCoordinate': 1
-        }, {
-            'isAlive': true,
-            'xCoordinate': 0,
-            'yCoordinate': 2
-        }
-    ]
-});
+
 webSocket.onopen = () => {
+    let cellList = [];
+    for (let i = 0; i < 90; i++) {
+        for (let j = 0; j < 90; j++) {
+            cellList.push({
+                'isAlive': 0===Math.floor(Math.random() * 2),
+                'xCoordinate': i,
+                'yCoordinate': j
+            });
+        }
+    }
+    let s = JSON.stringify({
+        'field':
+            cellList
+
+    });
     webSocket.send(s);
 }
 
@@ -35,7 +34,16 @@ webSocket.onmessage = (event) => {
     console.log(data.field);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    data.field.forEach(c => ctx.fillRect(c.xCoordinate * 10, c.yCoordinate * 10, 10, 10))
 
-    setTimeout(() => webSocket.send(event.data), 1000);
+    if(!data.field) return;
+
+    data.field.forEach(c => {
+        ctx.beginPath();
+        ctx.fillRect(c.xCoordinate * 10, c.yCoordinate * 10, 10, 10);
+        ctx.fill();
+        ctx.closePath();
+
+    });
+
+    setTimeout(() => webSocket.send(event.data));
 };

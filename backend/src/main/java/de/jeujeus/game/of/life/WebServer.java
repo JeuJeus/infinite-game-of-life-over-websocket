@@ -11,7 +11,6 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletContainerInitializer;
 
-import java.net.URL;
 import java.util.Objects;
 
 
@@ -31,7 +30,7 @@ public class WebServer {
 
         JavaxWebSocketServletContainerInitializer
                 .configure(contextHandler, (servletContext, wsContainer) -> {
-                    wsContainer.setDefaultMaxTextMessageBufferSize(65535);
+                    wsContainer.setDefaultMaxTextMessageBufferSize(65535*8);
                     wsContainer.addEndpoint(ConnectionEndpoint.class);
                 });
 
