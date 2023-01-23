@@ -42,12 +42,12 @@ public class Field {
         return generateField(0, fieldWidth, 0, fieldHeight);
     }
 
-    static Table<Integer, Integer, Cell> trimDeadOuterCellsFromField(final Table<Integer, Integer, Cell> untrimmedField) {
+    static Table<Integer, Integer, Cell> trimDeadOuterCellsFromField(final Table<Integer, Integer, Cell> fieldBeingTrimmed) {
         //TODO refactor this monstrum
-        if (untrimmedField.isEmpty()) return untrimmedField;
+        if (fieldBeingTrimmed.isEmpty()) return fieldBeingTrimmed;
 
-        Map<Integer, Map<Integer, Cell>> untrimmedFieldColumns = untrimmedField.columnMap();
-        Map<Integer, Map<Integer, Cell>> untrimmedFieldRows = untrimmedField.rowMap();
+        Map<Integer, Map<Integer, Cell>> untrimmedFieldColumns = fieldBeingTrimmed.columnMap();
+        Map<Integer, Map<Integer, Cell>> untrimmedFieldRows = fieldBeingTrimmed.rowMap();
 
         boolean outerLeftColumnDead = isOuterLeftColumnDead(untrimmedFieldColumns);
         boolean outerRightColumnDead = isOuterRightColumnDead(untrimmedFieldColumns);
@@ -55,32 +55,32 @@ public class Field {
         boolean outerBottomRowDead = isOuterBottomRowDead(untrimmedFieldRows);
 
         if (isNoOuterRowsColumnsDead(outerLeftColumnDead, outerRightColumnDead, outerTopRowDead, outerBottomRowDead)) {
-            return untrimmedField;
+            return fieldBeingTrimmed;
         }
 
         if (outerLeftColumnDead) {
-            untrimmedField.column(getFirstIndexIn(untrimmedFieldColumns))
+            fieldBeingTrimmed.column(getFirstIndexIn(untrimmedFieldColumns))
                     .clear();
-            return trimDeadOuterCellsFromField(untrimmedField);
+            return trimDeadOuterCellsFromField(fieldBeingTrimmed);
         }
         if (outerRightColumnDead) {
-            untrimmedField.column(getLastIndexIn(untrimmedFieldColumns))
+            fieldBeingTrimmed.column(getLastIndexIn(untrimmedFieldColumns))
                     .clear();
-            return trimDeadOuterCellsFromField(untrimmedField);
+            return trimDeadOuterCellsFromField(fieldBeingTrimmed);
         }
         if (outerTopRowDead) {
-            untrimmedField.row(getFirstIndexIn(untrimmedFieldRows))
+            fieldBeingTrimmed.row(getFirstIndexIn(untrimmedFieldRows))
                     .clear();
-            return trimDeadOuterCellsFromField(untrimmedField);
+            return trimDeadOuterCellsFromField(fieldBeingTrimmed);
         }
         if (outerBottomRowDead) {
-            untrimmedField.row(getLastIndexIn(untrimmedFieldRows))
+            fieldBeingTrimmed.row(getLastIndexIn(untrimmedFieldRows))
                     .clear();
-            return trimDeadOuterCellsFromField(untrimmedField);
+            return trimDeadOuterCellsFromField(fieldBeingTrimmed);
         }
 
 
-        return untrimmedField;
+        return fieldBeingTrimmed;
     }
 
     static Integer getFirstIndexIn(final Map<Integer, Map<Integer, Cell>> fields) {
