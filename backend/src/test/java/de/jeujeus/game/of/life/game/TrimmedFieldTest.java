@@ -4,11 +4,25 @@ import com.google.common.collect.Table;
 import de.jeujeus.game.of.life.game.model.Cell;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrimmedFieldTest {
+
+    @Test
+    void should_remove_dead_cells_from_field() {
+        Cell alive = new Cell(true, 1, 1);
+        Cell dead = new Cell(false, 0, 0);
+        List<Cell> cells = List.of(alive, dead);
+
+        List<Cell> cellsAlive = TrimmedField.trimDeadCellsFromField(cells);
+
+        assertEquals(1,cellsAlive.size());
+        assertEquals(alive,cellsAlive.get(0));
+    }
+
     @Test
     void should_trim_outer_columns_and_rows_with_only_dead_cells_from_field() {
         final int fieldWidth = 4;

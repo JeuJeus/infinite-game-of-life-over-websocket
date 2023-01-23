@@ -4,10 +4,17 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Table;
 import de.jeujeus.game.of.life.game.model.Cell;
 
+import java.util.List;
 import java.util.Map;
 
 public class TrimmedField {
     private TrimmedField() {
+    }
+
+    public static List<Cell> trimDeadCellsFromField(final List<Cell> untrimmedField) {
+        return untrimmedField.parallelStream()
+                .filter(Cell::isAlive)
+                .toList();
     }
 
     static Table<Integer, Integer, Cell> trimDeadOuterCellsFromField(final Table<Integer, Integer, Cell> fieldBeingTrimmed) {
