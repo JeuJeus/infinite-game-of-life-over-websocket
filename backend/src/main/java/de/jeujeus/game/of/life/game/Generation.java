@@ -12,7 +12,17 @@ public class Generation {
     private Generation() {
     }
 
-    public static Table<Integer, Integer, Cell> createGenerationFromList(List<Cell> generation) {
+    public static List<Cell> calculateNextGeneration(List<Cell> currentGenerationCells) {
+        Table<Integer, Integer, Cell> currentGeneration = Generation.createGenerationFromList(currentGenerationCells);
+        Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
+
+        return nextGeneration.cellSet()
+                .stream()
+                .map(Table.Cell::getValue)
+                .toList();
+    }
+
+    static Table<Integer, Integer, Cell> createGenerationFromList(List<Cell> generation) {
         //TODO refactor this beast
         int xLowestIndex = generation.stream()
                 .min(Comparator.comparing(Cell::getXCoordinate))

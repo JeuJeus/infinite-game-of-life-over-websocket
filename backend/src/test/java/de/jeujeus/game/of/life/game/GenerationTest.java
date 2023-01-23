@@ -1,8 +1,6 @@
-package de.jeujeus.game.of.life;
+package de.jeujeus.game.of.life.game;
 
 import com.google.common.collect.Table;
-import de.jeujeus.game.of.life.game.Field;
-import de.jeujeus.game.of.life.game.Generation;
 import de.jeujeus.game.of.life.game.model.Cell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -104,7 +103,7 @@ class GenerationTest {
         @Test
         void should_calculate_blinker() {
             Table<Integer, Integer, Cell> currentGeneration = Field.generateField(1, 3);
-            //square block
+            //veritcal dash
             currentGeneration.get(0, 0)
                     .setAlive(true);
             currentGeneration.get(0, 1)
@@ -242,4 +241,33 @@ class GenerationTest {
         }
     }
 
+    @Test
+    void parsing_generation_should_equate_to_same_object() {
+        Table<Integer, Integer, Cell> generationTable = Field.generateField(1, 3);
+        //veritcal dash
+        generationTable.get(0, 0)
+                .setAlive(true);
+        generationTable.get(0, 1)
+                .setAlive(true);
+        generationTable.get(0, 2)
+                .setAlive(true);
+
+        Cell cell0 = new Cell(true, 0, 0);
+        Cell cell1 = new Cell(true, 0, 1);
+        Cell cell2 = new Cell(true, 0, 2);
+        List<Cell> generationList = List.of(cell0, cell1, cell2);
+
+        Table<Integer, Integer, Cell> generationFromList = Generation.createGenerationFromList(generationList);
+
+        assertEquals(generationTable.cellSet()
+                .size(), generationFromList.cellSet()
+                .size());
+        generationFromList.cellSet()
+                .stream()
+                .map(Table.Cell::getValue)
+                .forEach(
+                        gl -> assertEquals(Objects.requireNonNull(generationTable.get(gl.getXCoordinate(), gl.getYCoordinate()))
+                                .isAlive(), gl.isAlive())
+                );
+    }
 }

@@ -40,16 +40,9 @@ public class ConnectionEndpoint {
 
     @OnMessage
     public void onMessage(Session session, GameState state) {
-        //TODO remove responsibility from here
-        Table<Integer, Integer, Cell> generation = Generation.createGenerationFromList(state.getField());
-        Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(generation);
-
-        List<Cell> nextGenerationCellList = nextGeneration.cellSet()
-                .stream()
-                .map(Table.Cell::getValue)
-                .toList();
-        GameState gameState = new GameState(nextGenerationCellList);
-
+        List<Cell> currenGeneration = state.getField();
+        List<Cell> nextGeneration = Generation.calculateNextGeneration(currenGeneration);
+        GameState gameState = new GameState(nextGeneration);
         sendMessage(gameState);
     }
 

@@ -1,4 +1,4 @@
-package de.jeujeus.game.of.life;
+package de.jeujeus.game.of.life.game;
 
 import com.google.common.collect.Table;
 import de.jeujeus.game.of.life.game.Field;
