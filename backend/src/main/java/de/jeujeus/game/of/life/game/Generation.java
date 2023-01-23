@@ -48,10 +48,10 @@ public class Generation {
     }
 
     public static Table<Integer, Integer, Cell> calculateNextGeneration(Table<Integer, Integer, Cell> currentGeneration) {
-        Integer xLowestIndex = Field.getFirstIndexIn(currentGeneration.columnMap());
-        Integer xHighestIndex = indexCorrection(Field.getLastIndexIn(currentGeneration.columnMap()));
-        Integer yLowestIndex = Field.getFirstIndexIn(currentGeneration.rowMap());
-        Integer yHighestIndex = indexCorrection(Field.getLastIndexIn(currentGeneration.rowMap()));
+        Integer xLowestIndex = TrimmedField.getFirstIndexIn(currentGeneration.columnMap());
+        Integer xHighestIndex = indexCorrection(TrimmedField.getLastIndexIn(currentGeneration.columnMap()));
+        Integer yLowestIndex = TrimmedField.getFirstIndexIn(currentGeneration.rowMap());
+        Integer yHighestIndex = indexCorrection(TrimmedField.getLastIndexIn(currentGeneration.rowMap()));
 
         Table<Integer, Integer, Cell> nextField = Field.generateNextField(xLowestIndex, xHighestIndex, yLowestIndex, yHighestIndex);
 
@@ -64,7 +64,7 @@ public class Generation {
                     c.setAlive(Cell.isAliveNextGeneration(currentGeneration, cellFromOldGeneration));
                 });
 
-        return Field.trimDeadOuterCellsFromField(nextField);
+        return TrimmedField.trimDeadOuterCellsFromField(nextField);
     }
 
     private static int indexCorrection(final int index) {
