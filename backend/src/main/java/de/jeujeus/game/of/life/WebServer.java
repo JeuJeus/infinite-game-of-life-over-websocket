@@ -12,6 +12,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletContainerInitializer;
 
 import java.net.URL;
+import java.util.Objects;
 
 
 public class WebServer {
@@ -30,20 +31,23 @@ public class WebServer {
 
         JavaxWebSocketServletContainerInitializer
                 .configure(contextHandler, (servletContext, wsContainer) -> {
-            wsContainer.setDefaultMaxTextMessageBufferSize(65535);
-            wsContainer.addEndpoint(ConnectionEndpoint.class);
-        });
+                    wsContainer.setDefaultMaxTextMessageBufferSize(65535);
+                    wsContainer.addEndpoint(ConnectionEndpoint.class);
+                });
 
         ResourceHandler resourceHandler = new ResourceHandler();
-        URL webAppDir =
-                Main.class.getClassLoader().getResource("META-INF/resources");
-        resourceHandler.setResourceBase(webAppDir.toURI().toString());
-        resourceHandler.setWelcomeFiles(new String[]{ "index.html" });
+        String webAppDir =
+                Objects.requireNonNull(Main.class.getClassLoader()
+                                .getResource("META-INF/resources"))
+                        .toURI()
+                        .toString();
+        resourceHandler.setResourceBase(webAppDir);
+        resourceHandler.setWelcomeFiles(new String[]{"index.html"});
         resourceHandler.setDirectoriesListed(false);
 
 
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { resourceHandler, contextHandler, new DefaultHandler() });
+        handlers.setHandlers(new Handler[]{resourceHandler, contextHandler, new DefaultHandler()});
         server.setHandler(handlers);
 
     }
