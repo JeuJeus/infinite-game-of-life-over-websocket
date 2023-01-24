@@ -1,8 +1,6 @@
 package de.jeujeus.game.of.life.game;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import de.jeujeus.game.of.life.game.model.Cell;
 
 import java.util.List;
@@ -36,10 +34,10 @@ public class Generation {
     }
 
     public static Table<Integer, Integer, Cell> calculateNextGeneration(Table<Integer, Integer, Cell> currentGeneration) {
-        final Integer xLowestIndex = TrimmedField.getFirstIndexIn(currentGeneration.columnMap());
-        final Integer xHighestIndex = indexCorrection(TrimmedField.getLastIndexIn(currentGeneration.columnMap()));
-        final Integer yLowestIndex = TrimmedField.getFirstIndexIn(currentGeneration.rowMap());
-        final Integer yHighestIndex = indexCorrection(TrimmedField.getLastIndexIn(currentGeneration.rowMap()));
+        final Integer xLowestIndex = TrimmedField.getFirstIndexIn(currentGeneration.rowMap());
+        final Integer xHighestIndex = indexCorrection(TrimmedField.getLastIndexIn(currentGeneration.rowMap()));
+        final Integer yLowestIndex = TrimmedField.getFirstIndexIn(currentGeneration.columnMap());
+        final Integer yHighestIndex = indexCorrection(TrimmedField.getLastIndexIn(currentGeneration.columnMap()));
 
         final Table<Integer, Integer, Cell> nextField = Field.generateNextField(xLowestIndex, xHighestIndex, yLowestIndex, yHighestIndex);
 

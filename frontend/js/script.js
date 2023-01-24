@@ -1,19 +1,14 @@
 const webSocket = new WebSocket('ws://localhost:8080/gameOfLife');
 webSocket.binaryType = 'arraybuffer';
 
-let messageDiv, canvas, ctx, canvasCellHeight, canvasCellWidth;
+let messageDiv, canvas, ctx;
 const AmountOfCellsOnXAxis = 90;
 const AmountOfCellsOnYAxis = 90;
-
-const setCellSize = () => {
-    canvasCellHeight = Math.floor(canvas.height / AmountOfCellsOnXAxis);
-    canvasCellWidth = Math.floor(canvas.width / AmountOfCellsOnYAxis);
-};
+const pixelSize = 10;
 
 const resizeCanvas = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    setCellSize();
 };
 
 addEventListener('DOMContentLoaded', () => {
@@ -49,7 +44,7 @@ const generateWebsocketMessage = cellList => JSON.stringify({
 
 const drawCellOnCanvas = c => {
     ctx.beginPath();
-    ctx.fillRect(c.xCoordinate * canvasCellHeight, c.yCoordinate * canvasCellWidth, canvasCellWidth, canvasCellHeight);
+    ctx.fillRect(c.xCoordinate * pixelSize, c.yCoordinate * pixelSize, pixelSize, pixelSize);
     ctx.fill();
     ctx.closePath();
 };
