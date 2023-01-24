@@ -26,7 +26,7 @@ public class Field {
                                                        final int fielStartHeight,
                                                        final int fieldHeight) {
 
-        Table<Integer, Integer, Cell> field = HashBasedTable.create();
+        final Table<Integer, Integer, Cell> field = HashBasedTable.create();
 
         range(fieldStartWidth, fieldWidth)
                 .forEachOrdered(c -> range(fielStartHeight, fieldHeight)

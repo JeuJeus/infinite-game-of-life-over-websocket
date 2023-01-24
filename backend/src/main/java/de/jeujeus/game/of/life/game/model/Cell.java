@@ -13,13 +13,13 @@ import static com.google.common.collect.Tables.toTable;
 import static java.util.stream.IntStream.rangeClosed;
 
 @Getter
-@Setter
 public class Cell {
 
+    @Setter
     private boolean isAlive;
-    private int xCoordinate;
+    private final int xCoordinate;
 
-    private int yCoordinate;
+    private final int yCoordinate;
 
 
     public Cell(final int xCoordinate, final int yCoordinate) {
@@ -60,7 +60,7 @@ public class Cell {
     }
 
     private static List<Cell> getCellAndItsNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final int xCoordinate, final int yCoordinate) {
-        ArrayList<Cell> neighbours = new ArrayList<>();
+        final ArrayList<Cell> neighbours = new ArrayList<>();
         rangeClosed(xCoordinate - 1, xCoordinate + 1)
                 .forEachOrdered(c -> rangeClosed(yCoordinate - 1, yCoordinate + 1)
                         .forEachOrdered(r -> neighbours.add(currentGeneration.get(c, r))));

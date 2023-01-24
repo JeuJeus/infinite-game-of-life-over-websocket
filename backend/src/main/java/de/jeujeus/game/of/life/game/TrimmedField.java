@@ -21,13 +21,13 @@ public class TrimmedField {
         //TODO refactor this monstrum
         if (fieldBeingTrimmed.isEmpty()) return fieldBeingTrimmed;
 
-        Map<Integer, Map<Integer, Cell>> untrimmedFieldColumns = fieldBeingTrimmed.columnMap();
-        Map<Integer, Map<Integer, Cell>> untrimmedFieldRows = fieldBeingTrimmed.rowMap();
+        final Map<Integer, Map<Integer, Cell>> untrimmedFieldColumns = fieldBeingTrimmed.columnMap();
+        final Map<Integer, Map<Integer, Cell>> untrimmedFieldRows = fieldBeingTrimmed.rowMap();
 
-        boolean outerLeftColumnDead = isOuterLeftColumnDead(untrimmedFieldColumns);
-        boolean outerRightColumnDead = isOuterRightColumnDead(untrimmedFieldColumns);
-        boolean outerTopRowDead = isOuterTopRowDead(untrimmedFieldRows);
-        boolean outerBottomRowDead = isOuterBottomRowDead(untrimmedFieldRows);
+        final boolean outerLeftColumnDead = isOuterLeftColumnDead(untrimmedFieldColumns);
+        final boolean outerRightColumnDead = isOuterRightColumnDead(untrimmedFieldColumns);
+        final boolean outerTopRowDead = isOuterTopRowDead(untrimmedFieldRows);
+        final boolean outerBottomRowDead = isOuterBottomRowDead(untrimmedFieldRows);
 
         if (isNoOuterRowsColumnsDead(outerLeftColumnDead, outerRightColumnDead, outerTopRowDead, outerBottomRowDead)) {
             return fieldBeingTrimmed;
@@ -59,26 +59,26 @@ public class TrimmedField {
     }
 
     private static boolean isOuterLeftColumnDead(final Map<Integer, Map<Integer, Cell>> untrimmedFieldColumns) {
-        Integer indexOfLeftColumn = getFirstIndexIn(untrimmedFieldColumns);
-        Map<Integer, Cell> outerLeftColumn = untrimmedFieldColumns.get(indexOfLeftColumn);
+        final Integer indexOfLeftColumn = getFirstIndexIn(untrimmedFieldColumns);
+        final Map<Integer, Cell> outerLeftColumn = untrimmedFieldColumns.get(indexOfLeftColumn);
         return containsOnlyDeadCells(outerLeftColumn);
     }
 
     private static boolean isOuterRightColumnDead(final Map<Integer, Map<Integer, Cell>> untrimmedFieldColumns) {
-        Integer indexOfRightColumn = getLastIndexIn(untrimmedFieldColumns);
-        Map<Integer, Cell> outerRightColumn = untrimmedFieldColumns.get(indexOfRightColumn);
+        final Integer indexOfRightColumn = getLastIndexIn(untrimmedFieldColumns);
+        final Map<Integer, Cell> outerRightColumn = untrimmedFieldColumns.get(indexOfRightColumn);
         return containsOnlyDeadCells(outerRightColumn);
     }
 
     private static boolean isOuterTopRowDead(final Map<Integer, Map<Integer, Cell>> untrimmedFieldRows) {
-        Integer indexOfTopRow = getFirstIndexIn(untrimmedFieldRows);
-        Map<Integer, Cell> outerTopRow = untrimmedFieldRows.get(indexOfTopRow);
+        final Integer indexOfTopRow = getFirstIndexIn(untrimmedFieldRows);
+        final Map<Integer, Cell> outerTopRow = untrimmedFieldRows.get(indexOfTopRow);
         return containsOnlyDeadCells(outerTopRow);
     }
 
     private static boolean isOuterBottomRowDead(final Map<Integer, Map<Integer, Cell>> untrimmedFieldRows) {
-        Integer indexOfBottomRow = getLastIndexIn(untrimmedFieldRows);
-        Map<Integer, Cell> outerBottomRow = untrimmedFieldRows.get(indexOfBottomRow);
+        final Integer indexOfBottomRow = getLastIndexIn(untrimmedFieldRows);
+        final Map<Integer, Cell> outerBottomRow = untrimmedFieldRows.get(indexOfBottomRow);
         return containsOnlyDeadCells(outerBottomRow);
     }
 
