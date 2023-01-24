@@ -1,4 +1,3 @@
-<!-- TODO before even starting to work on the -> refactor -->
 const webSocket = new WebSocket('ws://localhost:8080/gameOfLife');
 webSocket.binaryType = 'arraybuffer';
 
@@ -9,41 +8,56 @@ addEventListener('DOMContentLoaded', () => {
     ctx = canvas.getContext("2d");
 });
 
+const getAliveOrDeadRandom = () => 0 === Math.floor(Math.random() * 2);
 
-webSocket.onopen = () => {
+const generateRandomField = (xSize, ySize) => {
     let cellList = [];
-    for (let i = 0; i < 90; i++) {
-        for (let j = 0; j < 90; j++) {
+    for (let i = 0; i < xSize; i++) {
+        for (let j = 0; j < ySize; j++) {
             cellList.push({
-                'isAlive': 0===Math.floor(Math.random() * 2),
+                'isAlive': getAliveOrDeadRandom(),
                 'xCoordinate': i,
                 'yCoordinate': j
             });
         }
     }
-    let s = JSON.stringify({
+    return cellList;
+};
+
+webSocket.onopen = () => {
+    let cellList = generateRandomField(90,90);
+    let gameState = JSON.stringify({
         'field':
             cellList
 
     });
-    webSocket.send(s);
+    webSocket.send(gameState);
 }
 
-webSocket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log(data.field);
+const drawCellOnCanvas = c => {
+    ctx.beginPath();
+    ctx.fillRect(c.xCoordinate * 10, c.yCoordinate * 10, 10, 10);
+    ctx.fill();
+    ctx.closePath();
+};
 
+const drawField = field => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    field.forEach(c => drawCellOnCanvas(c));
+};
 
-    if(!data.field) return;
+webSocket.onmessage = (event) => {
+    console.timeEnd('generationCalculationDurationWas');
 
-    data.field.forEach(c => {
-        ctx.beginPath();
-        ctx.fillRect(c.xCoordinate * 10, c.yCoordinate * 10, 10, 10);
-        ctx.fill();
-        ctx.closePath();
+    const rawGameState = event.data;
+    const gameState = JSON.parse(rawGameState);
+    const field = gameState.field;
+    if(!field) return;
 
-    });
+    console.log(field.length);
+    drawField(field);
 
-    setTimeout(() => webSocket.send(event.data));
+    webSocket.send(rawGameState);
+
+    console.time('generationCalculationDurationWas');
 };
