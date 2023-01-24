@@ -1,9 +1,13 @@
 package de.jeujeus.game.of.life.game;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.jeujeus.game.of.life.game.model.Cell;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+
+import static com.google.common.collect.Tables.toTable;
 
 public class Generation {
 
@@ -22,30 +26,12 @@ public class Generation {
     }
 
     static Table<Integer, Integer, Cell> createGenerationFromList(List<Cell> generation) {
-        //TODO refactor this beast
-        int xLowestIndex = generation.stream()
-                .min(Comparator.comparing(Cell::getXCoordinate))
-                .orElseThrow(NoSuchElementException::new)
-                .getXCoordinate();
-        int xHighestIndex = indexCorrection(generation.stream()
-                .max(Comparator.comparing(Cell::getXCoordinate))
-                .orElseThrow(NoSuchElementException::new)
-                .getXCoordinate());
-        int yLowestIndex = generation.stream()
-                .min(Comparator.comparing(Cell::getYCoordinate))
-                .orElseThrow(NoSuchElementException::new)
-                .getYCoordinate();
-        int yHighestIndex = indexCorrection(generation.stream()
-                .max(Comparator.comparing(Cell::getYCoordinate))
-                .orElseThrow(NoSuchElementException::new)
-                .getYCoordinate());
-
-        Table<Integer, Integer, Cell> builtField = Field.generateField(xLowestIndex, xHighestIndex, yLowestIndex, yHighestIndex);
-        generation.parallelStream()
-                .forEach(c -> Objects.requireNonNull(builtField.get(c.getXCoordinate(), c.getYCoordinate()))
-                        .setAlive(c.isAlive()));
-
-        return builtField;
+        return generation.parallelStream()
+                .collect(toTable(
+                        Cell::getXCoordinate,
+                        Cell::getYCoordinate,
+                        cell -> cell,
+                        HashBasedTable::create));
     }
 
     public static Table<Integer, Integer, Cell> calculateNextGeneration(Table<Integer, Integer, Cell> currentGeneration) {
