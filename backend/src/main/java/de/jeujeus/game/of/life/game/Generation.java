@@ -1,6 +1,7 @@
 package de.jeujeus.game.of.life.game;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import de.jeujeus.game.of.life.game.model.Cell;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.collect.Tables.toTable;
+import static de.jeujeus.game.of.life.game.model.Cell.getCellAndItsNeighbours;
 
 public class Generation {
 
@@ -42,16 +44,34 @@ public class Generation {
 
         Table<Integer, Integer, Cell> nextField = Field.generateNextField(xLowestIndex, xHighestIndex, yLowestIndex, yHighestIndex);
 
+        ImmutableTable<Integer, Integer, Cell> onlyAliveCellsWithNeighbours = reduceGenerationToAliveCellsWithNeighbours(currentGeneration);
+
         nextField.cellSet()
                 .stream()
                 .map(Table.Cell::getValue)
                 .forEach(c -> {
-                    Cell cellFromOldGeneration = Optional.ofNullable(currentGeneration.get(c.getXCoordinate(), c.getYCoordinate()))
+                    Cell cellFromOldGeneration = Optional.ofNullable(onlyAliveCellsWithNeighbours.get(c.getXCoordinate(), c.getYCoordinate()))
                             .orElse(new Cell(c.getXCoordinate(), c.getYCoordinate()));
-                    c.setAlive(Cell.isAliveNextGeneration(currentGeneration, cellFromOldGeneration));
+                    c.setAlive(Cell.isAliveNextGeneration(onlyAliveCellsWithNeighbours, cellFromOldGeneration));
                 });
 
         return TrimmedField.trimDeadOuterCellsFromField(nextField);
+    }
+
+    private static ImmutableTable<Integer, Integer, Cell> reduceGenerationToAliveCellsWithNeighbours(final Table<Integer, Integer, Cell> currentGeneration) {
+        return currentGeneration.cellSet()
+                .stream()
+                .map(Table.Cell::getValue)
+                .filter(Cell::isAlive)
+                .map(livingCell -> getCellAndItsNeighbours(currentGeneration, livingCell))
+                .flatMap(livingCellWithNeighbours -> livingCellWithNeighbours.cellSet()
+                        .stream())
+                .collect(ImmutableTable.toImmutableTable(
+                        Table.Cell::getRowKey,
+                        Table.Cell::getColumnKey,
+                        Table.Cell::getValue,
+                        (c1, c2) -> c1
+                ));
     }
 
     private static int indexCorrection(final int index) {

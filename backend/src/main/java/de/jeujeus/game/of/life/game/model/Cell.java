@@ -1,5 +1,6 @@
 package de.jeujeus.game.of.life.game.model;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.google.common.collect.Tables.toTable;
 import static java.util.stream.IntStream.rangeClosed;
 
 @Getter
@@ -33,24 +35,31 @@ public class Cell {
     }
 
     public static boolean isAliveNextGeneration(Table<Integer, Integer, Cell> currentGeneration, Cell cell) {
-        int aliveNeighbours = getCountOfAliveNeighbours(currentGeneration, cell);
-//        Any live cell with two or three live neighbours survives.
-//        Any dead cell with three live neighbours becomes a live cell.
-//        All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+        final int aliveNeighbours = getCountOfAliveNeighbours(currentGeneration, cell);
+        //Any live cell with two or three live neighbours survives.
+        //Any dead cell with three live neighbours becomes a live cell.
+        //All other live cells die in the next generation. Similarly, all other dead cells stay dead.
         return (cell.isAlive() && aliveNeighbours == 2) || aliveNeighbours == 3;
     }
 
     public static int getCountOfAliveNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell cell) {
-        List<Cell> neighbours = getNeighbours(currentGeneration, cell);
+        final List<Cell> neighbours = getNeighbours(currentGeneration, cell);
         return Math.toIntExact(neighbours.stream()
                 .filter(Cell::isAlive)
                 .count());
     }
 
-    public static List<Cell> getNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell cell) {
-        int xCoordinate = cell.getXCoordinate();
-        int yCoordinate = cell.getYCoordinate();
+    public static HashBasedTable<Integer, Integer, Cell> getCellAndItsNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell c) {
+        final List<Cell> neighbours = Cell.getCellAndItsNeighbours(currentGeneration, c.getXCoordinate(), c.getYCoordinate());
+        return neighbours.stream()
+                .collect(toTable(
+                        Cell::getXCoordinate,
+                        Cell::getYCoordinate,
+                        cell -> cell,
+                        HashBasedTable::create));
+    }
 
+    private static List<Cell> getCellAndItsNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final int xCoordinate, final int yCoordinate) {
         ArrayList<Cell> neighbours = new ArrayList<>();
         rangeClosed(xCoordinate - 1, xCoordinate + 1)
                 .forEachOrdered(c -> rangeClosed(yCoordinate - 1, yCoordinate + 1)
@@ -58,7 +67,14 @@ public class Cell {
 
         return neighbours.parallelStream()
                 .filter(Objects::nonNull)
-                .filter(n -> isNotOriginCell(xCoordinate, yCoordinate, n))
+                .toList();
+    }
+
+    public static List<Cell> getNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell cell) {
+        final int xCoordinate = cell.getXCoordinate();
+        final int yCoordinate = cell.getYCoordinate();
+        return getCellAndItsNeighbours(currentGeneration, xCoordinate, yCoordinate).stream()
+                .filter(c -> isNotOriginCell(xCoordinate, yCoordinate, c))
                 .toList();
     }
 
