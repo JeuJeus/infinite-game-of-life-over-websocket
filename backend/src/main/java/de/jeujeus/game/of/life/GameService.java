@@ -13,10 +13,10 @@ public class GameService {
     }
 
     public static GameState calculateAliveNextGenerationCells(final GameState state) {
-        List<Cell> currentGeneration = state.getField();
+        final List<Cell> currentGeneration = state.field();
 
-        List<Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
-        List<Cell> aliveCellsNextGeneration = TrimmedField.trimDeadCellsFromField(nextGeneration);
+        final List<Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
+        final List<Cell> aliveCellsNextGeneration = TrimmedField.trimDeadCellsFromField(nextGeneration);
 
         return new GameState(aliveCellsNextGeneration);
     }

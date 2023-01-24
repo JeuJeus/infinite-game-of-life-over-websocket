@@ -20,7 +20,6 @@ public class Generation {
         final Table<Integer, Integer, Cell> currentGeneration = Generation.createGenerationFromList(currentGenerationCells);
         final Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
 
-        //todo remove all dead cells to improve performance
         return nextGeneration.cellSet()
                 .stream()
                 .map(Table.Cell::getValue)
