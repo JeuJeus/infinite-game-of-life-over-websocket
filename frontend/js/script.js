@@ -57,7 +57,7 @@ const drawCellOnCanvas = c => {
 
 const drawField = field => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    field.forEach(c => drawCellOnCanvas(c));
+    field.filter(c => c.isAlive).forEach(c => drawCellOnCanvas(c));
 };
 
 webSocket.onopen = () => {
