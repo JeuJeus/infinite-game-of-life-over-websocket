@@ -1,11 +1,28 @@
 const webSocket = new WebSocket('ws://localhost:8080/gameOfLife');
 webSocket.binaryType = 'arraybuffer';
 
-let messageDiv, canvas, ctx;
+let messageDiv, canvas, ctx, canvasCellHeight, canvasCellWidth;
+const AmountOfCellsOnXAxis = 90;
+const AmountOfCellsOnYAxis = 90;
+
+const setCellSize = () => {
+    canvasCellHeight = Math.floor(canvas.height / AmountOfCellsOnXAxis);
+    canvasCellWidth = Math.floor(canvas.width / AmountOfCellsOnYAxis);
+};
+
+const resizeCanvas = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    setCellSize();
+};
+
 addEventListener('DOMContentLoaded', () => {
     messageDiv = document.querySelector('#game');
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
+
+    resizeCanvas();
+    window.addEventListener('resize', () => resizeCanvas())
 });
 
 const getAliveOrDeadRandom = () => 0 === Math.floor(Math.random() * 2);
@@ -24,27 +41,30 @@ const generateRandomField = (xSize, ySize) => {
     return cellList;
 };
 
-webSocket.onopen = () => {
-    let cellList = generateRandomField(90,90);
-    let gameState = JSON.stringify({
-        'field':
-            cellList
+const generateWebsocketMessage = cellList => JSON.stringify({
+    'field':
+    cellList
 
-    });
-    webSocket.send(gameState);
-}
+});
 
 const drawCellOnCanvas = c => {
     ctx.beginPath();
-    ctx.fillRect(c.xCoordinate * 10, c.yCoordinate * 10, 10, 10);
+    ctx.fillRect(c.xCoordinate * canvasCellHeight, c.yCoordinate * canvasCellWidth, canvasCellWidth, canvasCellHeight);
     ctx.fill();
     ctx.closePath();
 };
+
 
 const drawField = field => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     field.forEach(c => drawCellOnCanvas(c));
 };
+
+webSocket.onopen = () => {
+    let cellList = generateRandomField(AmountOfCellsOnXAxis, AmountOfCellsOnYAxis);
+    let gameState = generateWebsocketMessage(cellList);
+    webSocket.send(gameState);
+}
 
 webSocket.onmessage = (event) => {
     console.timeEnd('generationCalculationDurationWas');
@@ -52,7 +72,7 @@ webSocket.onmessage = (event) => {
     const rawGameState = event.data;
     const gameState = JSON.parse(rawGameState);
     const field = gameState.field;
-    if(!field) return;
+    if (!field) return;
 
     console.log(field.length);
     drawField(field);
