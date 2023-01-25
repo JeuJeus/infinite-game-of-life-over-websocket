@@ -18,6 +18,9 @@ public class GameService {
         final List<Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
         final List<Cell> aliveCellsNextGeneration = TrimmedField.trimDeadCellsFromField(nextGeneration);
 
+        new Thread( () -> System.gc()).start();
+        ;//TODO -> manually instructing the GarbabgeCollector to Cleanup does not resolve MemoryLeaks in LambdaFunctions
+
         return new GameState(aliveCellsNextGeneration);
     }
 }

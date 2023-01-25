@@ -52,8 +52,6 @@ public class Generation {
                     c.setAlive(Cell.isAliveNextGeneration(onlyAliveCellsWithNeighbours, cellFromOldGeneration));
                 });
 
-        System.gc();//TODO -> manuall instructing the GarbabgeCollector to Cleanup does not resolve MemoryLeaks in LambdaFunctions
-
         return TrimmedField.trimDeadOuterCellsFromField(nextField);
     }
 
