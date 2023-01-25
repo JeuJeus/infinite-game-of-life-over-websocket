@@ -4,6 +4,10 @@ This is a Functional-Programming Implementation of John Conways "Game of Life" w
 The Frontend is written in plain HTML/CSS/JS and communicates to the Backend, holding all Logic, via Websockets.
 Beneath Guava, Jetty was used for the Webserver and Websocket Implementation.
 
+## HowToRun
+- Either Open the Project in an IDE of your Choice, start the Backends Main Class and open the Frontends index.html in your browser
+- or use the Backends Mavenwrapper to build a executbale jar, run that in the target folder with ```java -jar backend-1.0-SNAPSHOT.jar``` and point your browser to _localhost:8080_
+
 ## Constraints used during Development
 - Functional Programming
 - TDD
