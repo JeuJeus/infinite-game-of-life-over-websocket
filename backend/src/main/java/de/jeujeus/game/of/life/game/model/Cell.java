@@ -18,7 +18,6 @@ public class Cell {
     @Setter
     private boolean isAlive;
     private final int xCoordinate;
-
     private final int yCoordinate;
 
 
