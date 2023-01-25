@@ -24,7 +24,7 @@ public class WebServer {
         connector = new ServerConnector(server);
         server.addConnector(connector);
 
-        ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setContextPath("/");
         contextHandler.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
 
@@ -34,8 +34,8 @@ public class WebServer {
                     wsContainer.addEndpoint(ConnectionEndpoint.class);
                 });
 
-        ResourceHandler resourceHandler = new ResourceHandler();
-        String webAppDir =
+        final ResourceHandler resourceHandler = new ResourceHandler();
+        final String webAppDir =
                 Objects.requireNonNull(Main.class.getClassLoader()
                                 .getResource("META-INF/resources"))
                         .toURI()
@@ -45,7 +45,7 @@ public class WebServer {
         resourceHandler.setDirectoriesListed(false);
 
 
-        HandlerList handlers = new HandlerList();
+        final HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resourceHandler, contextHandler, new DefaultHandler()});
         server.setHandler(handlers);
 
