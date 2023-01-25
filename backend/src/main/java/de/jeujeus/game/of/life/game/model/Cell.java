@@ -60,8 +60,8 @@ public class Cell {
 
     private static List<Cell> getCellAndItsNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final int xCoordinate, final int yCoordinate) {
         final ArrayList<Cell> neighbours = new ArrayList<>();
-        rangeClosed(xCoordinate - 1, xCoordinate + 1)
-                .forEachOrdered(c -> rangeClosed(yCoordinate - 1, yCoordinate + 1)
+        rangeClosed(xCoordinate - 1, xCoordinate + 1).boxed()
+                .forEachOrdered(c -> rangeClosed(yCoordinate - 1, yCoordinate + 1).boxed()
                         .forEachOrdered(r -> neighbours.add(currentGeneration.get(c, r))));
 
         return neighbours.parallelStream()
