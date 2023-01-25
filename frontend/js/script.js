@@ -6,6 +6,8 @@ const AmountOfCellsOnXAxis = 90;
 const AmountOfCellsOnYAxis = 90;
 const pixelSize = 10;
 
+let currentGeneration = 0;
+
 const resizeCanvas = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -37,22 +39,32 @@ const generateRandomField = (xSize, ySize) => {
 };
 
 const generateWebsocketMessage = cellList => JSON.stringify({
-    'field':
-    cellList
-
+    'field': cellList
 });
 
 const drawCellOnCanvas = c => {
     ctx.beginPath();
+    ctx.fillStyle = "black";
     ctx.fillRect(c.xCoordinate * pixelSize, c.yCoordinate * pixelSize, pixelSize, pixelSize);
     ctx.fill();
     ctx.closePath();
 };
 
 
+const drawCurrentGeneration = () => {
+    ctx.beginPath();
+    ++currentGeneration;
+    ctx.font = "40px monospace";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "top";
+    ctx.fillText(currentGeneration, 0, 30);
+    ctx.closePath();
+};
+
 const drawField = field => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     field.filter(c => c.isAlive).forEach(c => drawCellOnCanvas(c));
+    drawCurrentGeneration();
 };
 
 webSocket.onopen = () => {
