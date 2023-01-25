@@ -44,14 +44,14 @@ public class Cell {
 
     public static int getCountOfAliveNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell cell) {
         final List<Cell> neighbours = getNeighbours(currentGeneration, cell);
-        return Math.toIntExact(neighbours.stream()
+        return Math.toIntExact(neighbours.parallelStream()
                 .filter(Cell::isAlive)
                 .count());
     }
 
     public static HashBasedTable<Integer, Integer, Cell> getCellAndItsNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell c) {
         final List<Cell> neighbours = Cell.getCellAndItsNeighbours(currentGeneration, c.getXCoordinate(), c.getYCoordinate());
-        return neighbours.stream()
+        return neighbours.parallelStream()
                 .collect(toTable(
                         Cell::getXCoordinate,
                         Cell::getYCoordinate,
@@ -73,7 +73,7 @@ public class Cell {
     public static List<Cell> getNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell cell) {
         final int xCoordinate = cell.getXCoordinate();
         final int yCoordinate = cell.getYCoordinate();
-        return getCellAndItsNeighbours(currentGeneration, xCoordinate, yCoordinate).stream()
+        return getCellAndItsNeighbours(currentGeneration, xCoordinate, yCoordinate).parallelStream()
                 .filter(c -> isNotOriginCell(xCoordinate, yCoordinate, c))
                 .toList();
     }

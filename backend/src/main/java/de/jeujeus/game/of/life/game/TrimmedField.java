@@ -91,21 +91,21 @@ public class TrimmedField {
 
     static Integer getFirstIndexIn(final Map<Integer, Map<Integer, Cell>> fields) {
         return Iterables.getFirst(fields.keySet()
-                .stream()
+                .parallelStream()
                 .sorted()
                 .toList(), 0);
     }
 
     static Integer getLastIndexIn(final Map<Integer, Map<Integer, Cell>> fields) {
         return Iterables.getLast(fields.keySet()
-                .stream()
+                .parallelStream()
                 .sorted()
                 .toList(), fields.size());
     }
 
     static boolean containsOnlyDeadCells(final Map<Integer, Cell> cells) {
         return cells.values()
-                .stream()
+                .parallelStream()
                 .noneMatch(Cell::isAlive);
     }
 }

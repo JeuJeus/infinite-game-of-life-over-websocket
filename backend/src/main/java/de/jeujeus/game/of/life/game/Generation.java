@@ -19,7 +19,7 @@ public class Generation {
         final Table<Integer, Integer, Cell> nextGeneration = Generation.calculateNextGeneration(currentGeneration);
 
         return nextGeneration.cellSet()
-                .stream()
+                .parallelStream()
                 .map(Table.Cell::getValue)
                 .toList();
     }
@@ -44,7 +44,7 @@ public class Generation {
         final ImmutableTable<Integer, Integer, Cell> onlyAliveCellsWithNeighbours = reduceGenerationToAliveCellsWithNeighbours(currentGeneration);
 
         nextField.cellSet()
-                .stream()
+                .parallelStream()
                 .map(Table.Cell::getValue)
                 .forEach(c -> {
                     Cell cellFromOldGeneration = Optional.ofNullable(onlyAliveCellsWithNeighbours.get(c.getXCoordinate(), c.getYCoordinate()))
@@ -57,12 +57,12 @@ public class Generation {
 
     private static ImmutableTable<Integer, Integer, Cell> reduceGenerationToAliveCellsWithNeighbours(final Table<Integer, Integer, Cell> currentGeneration) {
         return currentGeneration.cellSet()
-                .stream()
+                .parallelStream()
                 .map(Table.Cell::getValue)
                 .filter(Cell::isAlive)
                 .map(livingCell -> getCellAndItsNeighbours(currentGeneration, livingCell))
                 .flatMap(livingCellWithNeighbours -> livingCellWithNeighbours.cellSet()
-                        .stream())
+                        .parallelStream())
                 .collect(ImmutableTable.toImmutableTable(
                         Table.Cell::getRowKey,
                         Table.Cell::getColumnKey,
