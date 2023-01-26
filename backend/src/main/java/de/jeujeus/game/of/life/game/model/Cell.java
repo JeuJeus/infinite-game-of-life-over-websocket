@@ -5,7 +5,6 @@ import com.google.common.collect.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,13 +58,11 @@ public class Cell {
     }
 
     private static List<Cell> getCellAndItsNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final int xCoordinate, final int yCoordinate) {
-        final ArrayList<Cell> neighbours = new ArrayList<>();
-        rangeClosed(xCoordinate - 1, xCoordinate + 1).boxed()
-                .forEachOrdered(c -> rangeClosed(yCoordinate - 1, yCoordinate + 1).boxed()
-                        .forEachOrdered(r -> neighbours.add(currentGeneration.get(c, r))));
-
-        return neighbours.parallelStream()
-                .filter(Objects::nonNull)
+        return rangeClosed(xCoordinate - 1, xCoordinate + 1).boxed()
+                .flatMap(c -> rangeClosed(yCoordinate - 1, yCoordinate + 1).boxed()
+                        .map(r -> currentGeneration.get(c, r))
+                        .filter(Objects::nonNull)
+                )
                 .toList();
     }
 
