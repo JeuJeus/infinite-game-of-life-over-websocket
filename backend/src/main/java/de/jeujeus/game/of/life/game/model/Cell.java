@@ -41,15 +41,14 @@ public class Cell {
     }
 
     public static int getCountOfAliveNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell cell) {
-        final List<Cell> neighbours = getNeighbours(currentGeneration, cell);
-        return Math.toIntExact(neighbours.parallelStream()
+        return Math.toIntExact(getNeighbours(currentGeneration, cell).parallelStream()
                 .filter(Cell::isAlive)
                 .count());
     }
 
     public static HashBasedTable<Integer, Integer, Cell> getCellAndItsNeighbours(final Table<Integer, Integer, Cell> currentGeneration, final Cell c) {
-        final List<Cell> neighbours = Cell.getCellAndItsNeighbours(currentGeneration, c.getXCoordinate(), c.getYCoordinate());
-        return neighbours.parallelStream()
+        return Cell.getCellAndItsNeighbours(currentGeneration, c.getXCoordinate(), c.getYCoordinate())
+                .parallelStream()
                 .collect(toTable(
                         Cell::getXCoordinate,
                         Cell::getYCoordinate,
