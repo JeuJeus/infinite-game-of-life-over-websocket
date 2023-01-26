@@ -16,7 +16,6 @@ Beneath Guava, Jetty was used for the Webserver and Websocket Implementation.
 
 ## Possible Improvements
 - Further Memory-Optimizations
-- Runtime Optimization, calculating only relevant Cells is Alive-Status not for every Cell
 
 ### Game of Life Rules
 - Any live cell with two or three live neighbours survives.
