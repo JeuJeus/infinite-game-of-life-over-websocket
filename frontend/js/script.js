@@ -1,25 +1,58 @@
 const webSocket = new WebSocket('ws://localhost:8080/gameOfLife');
 webSocket.binaryType = 'arraybuffer';
 
-let messageDiv, canvas, ctx;
+let canvasParent, canvas, ctx;
 const AmountOfCellsOnXAxis = 90;
 const AmountOfCellsOnYAxis = 90;
 const pixelSize = 10;
 
 let currentGeneration = 0;
 
-const resizeCanvas = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+let canvasClicked = false;
+let lastX = 0;
+let lastY = 0;
+
+const makeCursor = cursor => document.body.style.cursor = cursor;
+
+const fitCanvasSize = () => {
+        canvas.style.width = '100%';
+        canvas.style.height='100%';
+        canvas.width  = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
 };
 
 addEventListener('DOMContentLoaded', () => {
-    messageDiv = document.querySelector('#game');
+    canvasParent = document.querySelector(".game-of-live-canvas");
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
 
-    resizeCanvas();
-    window.addEventListener('resize', () => resizeCanvas())
+    makeCursor('pointer');
+    fitCanvasSize();
+    window.addEventListener('resize', () => fitCanvasSize());
+
+    canvas.addEventListener('mousedown', () => {
+        canvasClicked = true;
+        makeCursor('grab');
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        canvasClicked = false;
+        makeCursor('pointer');
+
+    });
+    canvas.addEventListener('mousemove', (event) => {
+        event.preventDefault();
+        if (!canvasClicked) return;
+
+        const x = event.clientX;
+        const y = event.clientY;
+
+        canvasParent.scrollLeft = lastX - x;
+        canvasParent.scrollTop = lastY - y;
+
+        lastX = x;
+        lastY = y;
+    });
 });
 
 const getAliveOrDeadRandom = () => 0 === Math.floor(Math.random() * 2);
@@ -32,11 +65,6 @@ const generateRandomField = (xSize, ySize) => {
             yCoordinate: y
         })));
 };
-
-const generateWebsocketMessage = cellList => JSON.stringify({
-    'field': cellList
-});
-
 const drawCellOnCanvas = c => {
     ctx.beginPath();
     ctx.fillStyle = "black";
@@ -44,7 +72,6 @@ const drawCellOnCanvas = c => {
     ctx.fill();
     ctx.closePath();
 };
-
 
 const drawCurrentGeneration = () => {
     ctx.beginPath();
@@ -61,6 +88,11 @@ const drawField = field => {
     field.filter(c => c.isAlive).forEach(c => drawCellOnCanvas(c));
     drawCurrentGeneration();
 };
+
+
+const generateWebsocketMessage = cellList => JSON.stringify({
+    'field': cellList
+});
 
 webSocket.onopen = () => {
     let cellList = generateRandomField(AmountOfCellsOnXAxis, AmountOfCellsOnYAxis);
