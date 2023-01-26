@@ -26,15 +26,15 @@ const getAliveOrDeadRandom = () => 0 === Math.floor(Math.random() * 2);
 
 const generateRandomField = (xSize, ySize) => {
     let cellList = [];
-    for (let i = 0; i < xSize; i++) {
-        for (let j = 0; j < ySize; j++) {
+    [...Array(xSize).keys()].forEach(x => {
+        [...Array(ySize).keys()].forEach(y => {
             cellList.push({
                 'isAlive': getAliveOrDeadRandom(),
-                'xCoordinate': i,
-                'yCoordinate': j
+                'xCoordinate': x,
+                'yCoordinate': y
             });
-        }
-    }
+        });
+    })
     return cellList;
 };
 
