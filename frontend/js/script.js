@@ -21,6 +21,30 @@ const fitCanvasSize = () => {
         canvas.height = canvas.offsetHeight;
 };
 
+const handleMouseMoveOverCanvas = event => {
+    event.preventDefault();
+    if (!canvasClicked) return;
+
+    const x = event.clientX;
+    const y = event.clientY;
+
+    canvasParent.scrollLeft = lastX - x;
+    canvasParent.scrollTop = lastY - y;
+
+    lastX = x;
+    lastY = y;
+};
+
+const onCanvasClickRelease = () => {
+    canvasClicked = false;
+    makeCursor('pointer');
+};
+
+const onCanvasClick = () => {
+    canvasClicked = true;
+    makeCursor('grab');
+};
+
 addEventListener('DOMContentLoaded', () => {
     canvasParent = document.querySelector(".game-of-live-canvas");
     canvas = document.getElementById("canvas");
@@ -28,31 +52,11 @@ addEventListener('DOMContentLoaded', () => {
 
     makeCursor('pointer');
     fitCanvasSize();
+
     window.addEventListener('resize', () => fitCanvasSize());
-
-    canvas.addEventListener('mousedown', () => {
-        canvasClicked = true;
-        makeCursor('grab');
-    });
-
-    canvas.addEventListener('mouseup', () => {
-        canvasClicked = false;
-        makeCursor('pointer');
-
-    });
-    canvas.addEventListener('mousemove', (event) => {
-        event.preventDefault();
-        if (!canvasClicked) return;
-
-        const x = event.clientX;
-        const y = event.clientY;
-
-        canvasParent.scrollLeft = lastX - x;
-        canvasParent.scrollTop = lastY - y;
-
-        lastX = x;
-        lastY = y;
-    });
+    canvas.addEventListener('mousedown', () => onCanvasClick());
+    canvas.addEventListener('mouseup', () => onCanvasClickRelease());
+    canvas.addEventListener('mousemove', (event) => handleMouseMoveOverCanvas(event));
 });
 
 const getAliveOrDeadRandom = () => 0 === Math.floor(Math.random() * 2);
