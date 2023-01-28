@@ -25,17 +25,12 @@ addEventListener('DOMContentLoaded', () => {
 const getAliveOrDeadRandom = () => 0 === Math.floor(Math.random() * 2);
 
 const generateRandomField = (xSize, ySize) => {
-    let cellList = [];
-    [...Array(xSize).keys()].forEach(x => {
-        [...Array(ySize).keys()].forEach(y => {
-            cellList.push({
-                'isAlive': getAliveOrDeadRandom(),
-                'xCoordinate': x,
-                'yCoordinate': y
-            });
-        });
-    })
-    return cellList;
+    return [...Array(xSize).keys()].flatMap(x =>
+        [...Array(ySize).keys()].flatMap(y => ({
+            isAlive: getAliveOrDeadRandom(),
+            xCoordinate: x,
+            yCoordinate: y
+        })));
 };
 
 const generateWebsocketMessage = cellList => JSON.stringify({
